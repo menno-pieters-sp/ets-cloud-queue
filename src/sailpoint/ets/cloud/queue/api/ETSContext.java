@@ -113,13 +113,13 @@ public class ETSContext {
 			} catch (SQLException | IOException e) {
 				throw new WebServiceException(e);
 			} finally {
-				if (statement != null) {
-					try {
+				try {
+					if (statement != null && !statement.isClosed()) {
 						statement.close();
-					} catch (SQLException e) {
-						log.error(e);
-						// Silently ignore
 					}
+				} catch (SQLException e) {
+					log.error(e);
+					// Silently ignore
 				}
 			}
 		}
@@ -142,12 +142,13 @@ public class ETSContext {
 			} catch (SQLException | IOException e) {
 				throw new WebServiceException(e);
 			} finally {
-				if (statement != null) {
-					try {
+				try {
+					if (statement != null && !statement.isClosed()) {
 						statement.close();
-					} catch (SQLException e) {
-						// Silently ignore
 					}
+				} catch (SQLException e) {
+					log.error(e);
+					// Silently ignore
 				}
 			}
 		}
@@ -169,13 +170,13 @@ public class ETSContext {
 			} catch (SQLException | IOException e) {
 				throw new WebServiceException(e);
 			} finally {
-				if (statement != null) {
-					try {
+				try {
+					if (statement != null && !statement.isClosed()) {
 						statement.close();
-					} catch (SQLException e) {
-						log.error(e);
-						// Silently ignore
 					}
+				} catch (SQLException e) {
+					log.error(e);
+					// Silently ignore
 				}
 			}
 		}
@@ -202,13 +203,13 @@ public class ETSContext {
 			} catch (SQLException | IOException e) {
 				throw new WebServiceException(e);
 			} finally {
-				if (statement != null) {
-					try {
+				try {
+					if (statement != null && !statement.isClosed()) {
 						statement.close();
-					} catch (SQLException e) {
-						log.error(e);
-						// Silently ignore
 					}
+				} catch (SQLException e) {
+					log.error(e);
+					// Silently ignore
 				}
 			}
 		}
@@ -240,13 +241,13 @@ public class ETSContext {
 			} catch (SQLException | IOException e) {
 				throw new WebServiceException(e);
 			} finally {
-				if (statement != null) {
-					try {
+				try {
+					if (statement != null && !statement.isClosed()) {
 						statement.close();
-					} catch (SQLException e) {
-						log.error(e);
-						// Silently ignore
 					}
+				} catch (SQLException e) {
+					log.error(e);
+					// Silently ignore
 				}
 			}
 		}
@@ -280,8 +281,11 @@ public class ETSContext {
 				throw new AuthorizationException(e);
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -317,12 +321,16 @@ public class ETSContext {
 				throw new AuthorizationException(e);
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
 		} else {
+			log.error("Invalid credentials");
 			throw new AuthorizationException("Invalid Credentials");
 		}
 	}
@@ -385,8 +393,11 @@ public class ETSContext {
 			throw new AuthorizationException(e);
 		} finally {
 			try {
-				statement.close();
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
 			} catch (SQLException e) {
+				log.error(e);
 				// Silently ignore
 			}
 		}
@@ -411,8 +422,11 @@ public class ETSContext {
 			result.put("status", "success");
 		} finally {
 			try {
-				statement.close();
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
 			} catch (SQLException e) {
+				log.error(e);
 				// Silently ignore
 			}
 		}
@@ -433,8 +447,11 @@ public class ETSContext {
 				statement.execute();
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -469,8 +486,11 @@ public class ETSContext {
 				}
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -504,8 +524,11 @@ public class ETSContext {
 				}
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -549,8 +572,11 @@ public class ETSContext {
 			throw new AuthorizationException(e);
 		} finally {
 			try {
-				statement.close();
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
 			} catch (SQLException e) {
+				log.error(e);
 				// Silently ignore
 			}
 		}
@@ -573,7 +599,7 @@ public class ETSContext {
 			statement.setString(2, token);
 			statement.setString(3, user_id);
 			statement.setString(4, description);
-			Timestamp t = new Timestamp(expiration.getTime());
+			Timestamp t = (expiration==null?null:new Timestamp(expiration.getTime()));
 			statement.setTimestamp(5, t);
 			statement.execute();
 			result.put("id", uuid);
@@ -581,8 +607,11 @@ public class ETSContext {
 			result.put("status", "success");
 		} finally {
 			try {
-				statement.close();
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
 			} catch (SQLException e) {
+				log.error(e);
 				// Silently ignore
 			}
 		}
@@ -603,8 +632,11 @@ public class ETSContext {
 				statement.execute();
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -631,8 +663,11 @@ public class ETSContext {
 			result.put("status", "success");
 		} finally {
 			try {
-				statement.close();
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
 			} catch (SQLException e) {
+				log.error(e);
 				// Silently ignore
 			}
 		}
@@ -653,8 +688,11 @@ public class ETSContext {
 				statement.execute();
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -678,8 +716,11 @@ public class ETSContext {
 				statement.execute();
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
@@ -701,8 +742,11 @@ public class ETSContext {
 				statement.execute();
 			} finally {
 				try {
-					statement.close();
+					if (statement != null && !statement.isClosed()) {
+						statement.close();
+					}
 				} catch (SQLException e) {
+					log.error(e);
 					// Silently ignore
 				}
 			}
