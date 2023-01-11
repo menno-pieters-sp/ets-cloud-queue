@@ -26,6 +26,19 @@ http://maven.apache.org/ASSEMBLY/2.0.0 ">
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/src/main/doc</directory>
+            <outputDirectory>doc</outputDirectory>
+            <includes>
+                <include>**/*.md</include>
+                <include>**/*.html</include>
+                <include>**/*.png</include>
+                <include>**/*.jpg</include>
+                <include>**/*.pdf</include>
+                <include>**/*.txt</include>
+                <include>**/*.json</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.basedir}/src/main/web</directory>
             <outputDirectory>${file.separator}</outputDirectory>
             <includes>

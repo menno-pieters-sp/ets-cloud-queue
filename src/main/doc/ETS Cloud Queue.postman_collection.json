@@ -1,0 +1,581 @@
+{
+	"info": {
+		"_postman_id": "9d3d655a-2e1b-4847-abf8-0c94870d2c8d",
+		"name": "ETS Cloud Queue",
+		"description": "This collections shows how to use the ETS Cloud Queue application. The collection consists of two parts: \n* The Cloud Queue itself, which allows injecting new events or retrieving events.\n* The Admin interface, which allows managing queues, clients (users) and access to queues.\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5838129"
+	},
+	"item": [
+		{
+			"name": "Cloud Queue",
+			"item": [
+				{
+					"name": "trigger",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fileName\": \"Search Export.2020-07-22 12'34 GMT\",\n    \"__hasMore\": true,\n    \"ownerName\": \"John Doe\",\n    \"query\": \"attributes.cloudLifecycleState:inactive AND @accounts(disabled:false AND source.name:389DS)\",\n    \"searchName\": \"Inactive Identities with Active Accounts\",\n    \"signedS3Url\": \"https://sppcbu-org-data-eucentral1.s3.eu-central-1.amazonaws.com/css-518/reports/Search%20Export.2020-07-22%2012%2734%20GMT.2ba4fbdf-8bf3-4d00-9247-ed9d053f4e05.zip?...\",\n    \"_metadata\": {\n        \"triggerId\": \"idn:saved-search-complete\",\n        \"triggerType\": \"fireAndForget\",\n        \"invocationId\": \"403b5a55-7cab-45f9-bd4b-ce159c21c083\"\n    },\n    \"searchResults\": {\n        \"Identity\": {\n            \"preview\": [\n                [\n                    \"Display Name\",\n                    \"Work Email\",\n                    \"Created\",\n                    \"Lifecycle State\",\n                    \"Tags\",\n                    \"Status\",\n                    \"ID\",\n                    \"Inactive\",\n                    \"Name\"\n                ],\n                [\n                    \"Crystal.Schmidt\",\n                    \"crystal.schmidt@example.com\",\n                    \"2020-06-24T09:31:30Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808472c9394d0172e5ab054f392b\",\n                    \"false\",\n                    \"Crystal.Schmidt\"\n                ],\n                [\n                    \"Denise.Hunt\",\n                    \"denise.hunt@example.com\",\n                    \"2020-06-24T09:31:29.947Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808672c938e60172e5ab051b64e1\",\n                    \"false\",\n                    \"Denise.Hunt\"\n                ],\n                [\n                    \"Jessica.Sanchez\",\n                    \"jessica.sanchez@example.com\",\n                    \"2020-06-24T09:31:26.479Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808472c9394d0172e5aaf78e38b6\",\n                    \"false\",\n                    \"Jessica.Sanchez\"\n                ],\n                [\n                    \"Judith.Tucker\",\n                    \"judith.tucker@example.com\",\n                    \"2020-06-24T09:31:27.252Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808472c9394d0172e5aafa9338d1\",\n                    \"false\",\n                    \"Judith.Tucker\"\n                ],\n                [\n                    \"Kathleen.Watson\",\n                    \"kathleen.watson@example.com\",\n                    \"2020-06-24T09:31:25.616Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808472c939330172e5aaf42f2283\",\n                    \"false\",\n                    \"Kathleen.Watson\"\n                ],\n                [\n                    \"Rosa.Garza\",\n                    \"rosa.garza@example.com\",\n                    \"2020-06-24T09:31:30.806Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808472c939330172e5ab08752316\",\n                    \"false\",\n                    \"Rosa.Garza\"\n                ],\n                [\n                    \"Sandra.Lopez\",\n                    \"sandra.lopez@example.com\",\n                    \"2020-06-24T09:31:25.867Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808672c938e60172e5aaf52b6491\",\n                    \"false\",\n                    \"Sandra.Lopez\"\n                ],\n                [\n                    \"Teresa.Cole\",\n                    \"teresa.cole@example.com\",\n                    \"2020-06-24T09:31:27.872Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808472c9394d0172e5aafcff38e5\",\n                    \"false\",\n                    \"Teresa.Cole\"\n                ],\n                [\n                    \"Tina.Ruiz\",\n                    \"tina.ruiz@example.com\",\n                    \"2020-06-24T09:31:28.865Z\",\n                    \"inactive\",\n                    \"\",\n                    \"UNREGISTERED\",\n                    \"2c91808672c938e60172e5ab00e064ca\",\n                    \"false\",\n                    \"Tina.Ruiz\"\n                ]\n            ],\n            \"count\": \"9\",\n            \"noun\": \"identities\"\n        }\n    },\n    \"ownerEmail\": \"john.doe@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rest/event/trigger/{{queue}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"event",
+								"trigger",
+								"{{queue}}"
+							]
+						},
+						"description": "With this operation, a message is injected into the specified queue, by an authorized client. The message body must be a JSON formatted event message."
+					},
+					"response": []
+				},
+				{
+					"name": "Poll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/rest/event/poll/{{queue}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"event",
+								"poll",
+								"{{queue}}"
+							]
+						},
+						"description": "With this operation, an authorized client can retrieve a single event message from the specified queue.\n\nThe returned information is the JSON formatted event message as delivered to the queue, with one additional attribute. The attribute \"__hasMore\" is injected with the value true or false, to indicate whether or not more events are waiting to be retrieved. The client can then decide whether or not to retrieve more events. After the message is retrieved, the message is removed from the queue."
+					},
+					"response": []
+				},
+				{
+					"name": "Peek",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/rest/event/peek/{{queue}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"event",
+								"peek",
+								"{{queue}}"
+							]
+						},
+						"description": "With this operation, an authorized client can retrieve a single event message from the specified queue.\n\nThe returned information is the JSON formatted event message as delivered to the queue. The message is not removed from the queue after being retrieved."
+					},
+					"response": []
+				},
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/rest/ping",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"ping"
+							]
+						},
+						"description": "The ping operation is a simple health-check. It simply returns \"Pong\" as a response."
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Queues",
+					"item": [
+						{
+							"name": "Get Queues",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/rest/admin/queue/list",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"queue",
+										"list"
+									]
+								},
+								"description": "List all available queus.\n\nThe response is a JSON map object containing a lists of queues. Each queue is identified by an id (UUID) and can have an optional description."
+							},
+							"response": []
+						},
+						{
+							"name": "Create Queue",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Example Saved Searches\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/rest/admin/queue/create",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"queue",
+										"create"
+									]
+								},
+								"description": "To create a queue, this operation can be called with a JSON object a a body, that should contain a description of the queue. The description is not required and is not checked for uniqueness, but highly recommended.\n\nThe response will contain a generated id to be used to identify the queue."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Queue",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/rest/admin/queue/delete/558a0dbc-b3ac-45f0-9888-b9211e9fac9b",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"queue",
+										"delete",
+										"558a0dbc-b3ac-45f0-9888-b9211e9fac9b"
+									]
+								},
+								"description": "This operation is used to completely delete a queue, including all queued messages and authorizations to the queue."
+							},
+							"response": []
+						}
+					],
+					"description": "This subcollection contains operations to list, create and delete queues.",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Get Users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/rest/admin/user/list",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"user",
+										"list"
+									]
+								},
+								"description": "List all users (clients).\n\n(**TODO**: paging)"
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"pm.environment.set(\"user_id\", jsonData.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Example\",\n    \"displayName\": \"Example IdentityNow\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/rest/admin/user/create",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"user",
+										"create"
+									]
+								},
+								"description": "Create a new user/client.\n\nThe body is a JSON object that must contain a unique name. A display name may be provided and active defaults to true.\n\n```{\n    \"name\": \"aUniqueName\",\n    \"displayName\": \"A display name\",\n    \"active\": true\n}```"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/rest/admin/user/delete/{{user_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"user",
+										"delete",
+										"{{user_id}}"
+									]
+								},
+								"description": "Delete a user specified by the given id."
+							},
+							"response": []
+						},
+						{
+							"name": "Set User Authorization",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\": \"{{user_id}}\",\n    \"queueId\": \"{{queue}}\",\n    \"read\": true,\n    \"write\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/rest/admin/user/authorization",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"user",
+										"authorization"
+									]
+								},
+								"description": "Set authorizations for a user on a queue. The body contains a JSON map with attributes `userId`, which is the user's UUID, the `queueId`, which is the UUID of the queue and boolean attributes `read` and/or `write` to allow reading and/or writing the queue."
+							},
+							"response": []
+						},
+						{
+							"name": "Unset User Authorization",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\": \"{{user_id}}\",\n    \"queueId\": \"{{queue}}\",\n    \"remove\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/rest/admin/user/authorization",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"user",
+										"authorization"
+									]
+								},
+								"description": "Set authorizations for a user on a queue. The body contains a JSON map with attributes userId, which is the user's UUID, the queueId, which is the UUID of the queue and boolean attribute `remove` with value `true` to remove all authorizations for the user/queue combination."
+							},
+							"response": []
+						},
+						{
+							"name": "Create User Token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\": \"{{user_id}}\",\n    \"description\": \"Description\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/rest/admin/token/create",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"token",
+										"create"
+									]
+								},
+								"description": "This operation creates a token that a client can use for authentication. A user can have multiple tokens for different clients, if needed. The JSON object must contain the `userId` attribute with the UUID of the user and optionally it may contain a description for the token.\n\nAnother optional attribute is the `expiration`, which contains a date when the token expires. The date can be specified is a few different formats:\n* as a long integer: the number of milliseconds since January 1, 1970, midnight GMT.\n* as a string: \n    * `yyyyMMddHHmmss`: assuming the server timezone\n    * `yyyyMMddHHmmss z`: timezone specified like `Pacific Standard Time`, `PST` or  `GMT-08:00` \n    * `yyyyMMddHHmmss Z`: timezone specified like `-0800`\n    * `yyyy.MM.dd HH:mm:ss`: assuming the server timezone\n    * `yyyy.MM.dd HH:mm:ss z`: timezone specified like `Pacific Standard Time`, `PST` or  `GMT-08:00`\n    * `yyyy.MM.dd HH:mm:ss Z`: timezone specified like `-0800`\n\nThe response will contain the bearer token value to be used by the client to inject or retrieve messages."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User Token",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/rest/admin/token/delete/{{token_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"rest",
+										"admin",
+										"token",
+										"delete",
+										"{{token_id}}"
+									]
+								},
+								"description": "Delete the token specified by the UUID."
+							},
+							"response": []
+						}
+					],
+					"description": "This subcollection contains operations to list, create and delete users and authorize them to use certain queues. For authentication, tokens can be created and deleted.",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin Test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/rest/admin/test",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"admin",
+								"test"
+							]
+						},
+						"description": "A simple test operation for admin access. The operation returns a success status on successful authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Hash Password",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/rest/admin/hash/V3ryS3cr3tP@ssw0rd",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"admin",
+								"hash",
+								"V3ryS3cr3tP@ssw0rd"
+							]
+						},
+						"description": "A simple test operation for admin access. The operation returns a success status on successful authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Get UUID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/rest/admin/uuid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rest",
+								"admin",
+								"uuid"
+							]
+						},
+						"description": "Get a single UUID value."
+					},
+					"response": []
+				}
+			],
+			"description": "This subcollection contains administrative functions to manage queue, users/clients and authorizations.\n\nAuthentication to the administrative functions is handled by the user and password specified in the properties file.",
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{admin_pass}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{admin_user}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
