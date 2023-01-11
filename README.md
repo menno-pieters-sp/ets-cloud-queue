@@ -22,6 +22,14 @@ This part is the Cloud Queue where messages are stored and can be retrieved from
 | **Support** | Only tested against Java 8 and Tomcat 9 |
 | **License** | LICENSE.txt |
 
+# Build
+
+Using maven:
+
+```
+mvn clean package
+```
+
 # Database deployment
 
 Currently, only MySQL is supported.
