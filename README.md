@@ -89,8 +89,21 @@ String ssha256(String salt, String password) {
      }
    }
   return null;
-}```
+}
+```
 
+Alternative way to generate password hash via the REST API:
+
+```
+GET {{base-url}}/rest/admin/hash/{{password}}
+```
+
+For example:
+```
+GET https://queue.example.com/ETSCloudQueue/rest/admin/hash/V3r4S3cr3tP@ssw0rd
+```
+
+This will return the hashed password, including salt and prefix.
 
 
 
