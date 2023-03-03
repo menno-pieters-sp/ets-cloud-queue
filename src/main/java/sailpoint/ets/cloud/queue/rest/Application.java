@@ -4,11 +4,11 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
 
-@ApplicationPath("rest")
+//@ApplicationPath("rest")
 public class Application extends ResourceConfig {
 
 	public Application() {
-		registerClasses(Application.class);
+		//registerClasses(Application.class);
 	}
 
 }

@@ -24,6 +24,9 @@ public class AuthorizationHelper {
 	}
 
 	public static String getBearerToken(String header) {
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Enter: getBearerToken(%s)", (header==null)?"null":"********"));
+		}
 		if (header != null && header.length() > 0) {
 			if (header.startsWith("Bearer ")) {
 				String token = header.substring("Bearer ".length() - 1).trim();
@@ -34,6 +37,9 @@ public class AuthorizationHelper {
 	}
 
 	public static Map<String, String> getBasicCredentials(String header) {
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Enter: getBasicCredentials(%s)", (header==null)?"null":"********"));
+		}
 		if (header != null && header.length() > 0) {
 			if (header.startsWith("Basic ")) {
 				String encodedAuthData = header.substring("Basic ".length() - 1).trim();
@@ -57,7 +63,7 @@ public class AuthorizationHelper {
 
 	public static String ssha256(String salt, String password) {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: ssha256(%s, %s)", salt, "********"));
+			log.debug(String.format("Enter: ssha256(%s, %s)", "********", "********"));
 		}
 		if (Util.isNotNullOrEmpty(salt) && Util.isNotNullOrEmpty(password)) {
 			String saltedPassword = salt + password;
@@ -68,7 +74,7 @@ public class AuthorizationHelper {
 				String hashString = encoder.encodeToString(encodedHash);
 				String result = SSHA256PREFIX + encoder.encodeToString(salt.getBytes(StandardCharsets.UTF_8)) + "$" + hashString;
 				if (log.isTraceEnabled()) {
-					log.trace(String.format("Return ssha256: %s", result));
+					log.trace(String.format("Return ssha256: %s********", SSHA256PREFIX));
 				}
 				return result;
 			} catch (NoSuchAlgorithmException e) {
@@ -79,6 +85,9 @@ public class AuthorizationHelper {
 	}
 
 	public static boolean validatePassword(String hashedPassword, String password) {
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Enter: validatePassword(%s, %s)", "********", "********"));
+		}
 		if (Util.isNotNullOrEmpty(hashedPassword)) {
 			if (hashedPassword.startsWith(SSHA256PREFIX) && hashedPassword.contains("$")) {
 				String h = hashedPassword.substring(SSHA256PREFIX.length());

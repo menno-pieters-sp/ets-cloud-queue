@@ -36,7 +36,9 @@ public class ETSContext {
 	private static Connection connection = null;
 	private static Properties properties = null;
 	private int maxEntryAge = 3600;
-
+	
+	public final static String PROPERTY_TOKEN_SALT = "tokenSalt";
+	
 	private ETSContext() {
 		throw new WebServiceException("HttpServletRequest required");
 	}
@@ -50,6 +52,9 @@ public class ETSContext {
 	}
 
 	private BasicDataSource getDataSource() throws FileNotFoundException, IOException {
+		if (log.isDebugEnabled()) {
+			log.debug("Enter: getDataSource()");
+		}
 		if (dataSource == null || dataSource.isClosed()) {
 			Properties properties = getProperties();
 			dataSource = new BasicDataSource();
@@ -65,6 +70,9 @@ public class ETSContext {
 	}
 
 	private Connection getConnection() throws FileNotFoundException, SQLException, IOException {
+		if (log.isDebugEnabled()) {
+			log.debug("Enter: getConnection()");
+		}
 		if (connection == null || connection.isClosed()) {
 			connection = getDataSource().getConnection();
 		}
@@ -72,6 +80,9 @@ public class ETSContext {
 	}
 
 	private Properties getProperties() throws FileNotFoundException, IOException {
+		if (log.isDebugEnabled()) {
+			log.debug("Enter: getProperties()");
+		}
 		if (properties == null) {
 			properties = new Properties();
 			String basePath = servletRequest.getServletContext().getRealPath("/");
@@ -90,8 +101,22 @@ public class ETSContext {
 		this.maxEntryAge = Util.otoi(properties.getProperty("db.queue.maxage", "3600"));
 	}
 
-	public static ETSContext getCurrentContext(HttpServletRequest servletRequest) throws FileNotFoundException, IOException, SQLException {
+	public static ETSContext getContext(HttpServletRequest servletRequest) throws FileNotFoundException, IOException, SQLException {
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Enter: getCurrentContext(%s)", servletRequest));
+		}
 		return new ETSContext(servletRequest);
+	}
+	
+	public void reload() throws FileNotFoundException, IOException, SQLException {
+		if (connection != null && !connection.isClosed()) {
+			connection.close();
+		}
+		if (dataSource != null && !dataSource.isClosed()) {
+			dataSource.close();
+		}
+		properties = null;
+		init();
 	}
 
 	public void cleanQueue(String queue) {
@@ -254,10 +279,25 @@ public class ETSContext {
 		}
 		return null;
 	}
+	
+	private String hashToken(final String token) throws FileNotFoundException, IOException {
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Enter: hashToken(%s)", token));
+		}
+		Properties properties = getProperties();
+		String salt = properties.getProperty(PROPERTY_TOKEN_SALT);
+		String newToken = token;
+		if (Util.isNotNullOrEmpty(salt)) {
+			newToken = AuthorizationHelper.ssha256(salt, token);
+		} else {
+			log.error(String.format("Property %s not configured", PROPERTY_TOKEN_SALT));
+		}
+		return newToken;
+	}
 
 	public void authorizeWrite(String token, String queue) throws AuthorizationException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: authorizeWrite(%s, %s)", token, queue));
+			log.debug(String.format("Enter: authorizeWrite(********, %s)", queue));
 		}
 		if (Util.isNotNullOrEmpty(token) && Util.isNotNullOrEmpty(queue)) {
 			String query = "SELECT COUNT(*) FROM ets_queue_access xs, ets_user_token t, ets_user u WHERE u.id = xs.user_id AND u.active = 1 AND xs.user_id = t.user_id AND xs.queue_id = ? AND t.token = ? AND xs.write = 1 AND (t.expiration IS NULL OR t.expiration > ?);";
@@ -266,7 +306,7 @@ public class ETSContext {
 				Connection connection = getConnection();
 				statement = connection.prepareStatement(query);
 				statement.setString(1, queue);
-				statement.setString(2, token);
+				statement.setString(2, hashToken(token));
 				Timestamp t = new Timestamp(new java.util.Date().getTime());
 				statement.setTimestamp(3, t);
 				ResultSet rs = statement.executeQuery();
@@ -297,7 +337,7 @@ public class ETSContext {
 
 	public void authorizeRead(String token, String queue) throws AuthorizationException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: authorizeRead(%s, %s)", token, queue));
+			log.debug(String.format("Enter: authorizeRead(********, %s)", queue));
 		}
 		if (Util.isNotNullOrEmpty(token) && Util.isNotNullOrEmpty(queue)) {
 			String query = "SELECT COUNT(*) FROM ets_queue_access xs, ets_user_token t, ets_user u WHERE u.id = xs.user_id AND u.active = 1 AND  xs.user_id = t.user_id AND xs.queue_id = ? AND t.token = ? AND xs.read = 1 AND (t.expiration IS NULL OR t.expiration > ?);";
@@ -306,7 +346,7 @@ public class ETSContext {
 				Connection connection = getConnection();
 				statement = connection.prepareStatement(query);
 				statement.setString(1, queue);
-				statement.setString(2, token);
+				statement.setString(2, hashToken(token));
 				Timestamp t = new Timestamp(new java.util.Date().getTime());
 				statement.setTimestamp(3, t);
 				ResultSet rs = statement.executeQuery();
@@ -357,7 +397,7 @@ public class ETSContext {
 
 	public void authorizeAdmin(Map<String, String> credentials) throws AuthorizationException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: authorizeAdmin(%s)", "Map(********)"));
+			log.debug(String.format("Enter: authorizeAdmin(%s)", (credentials==null)?"null":"Map(********)"));
 		}
 		if (credentials == null || credentials.isEmpty()) {
 			throw new AuthorizationException("Invalid Credentials");
@@ -597,7 +637,7 @@ public class ETSContext {
 			Connection connection = getConnection();
 			statement = connection.prepareStatement(query);
 			statement.setString(1, uuid);
-			statement.setString(2, token);
+			statement.setString(2, hashToken(token));
 			statement.setString(3, user_id);
 			statement.setString(4, description);
 			Timestamp t = (expiration==null?null:new Timestamp(expiration.getTime()));
@@ -753,6 +793,63 @@ public class ETSContext {
 			}
 		}
 	}
+	
+	public int hashTokens() throws FileNotFoundException, SQLException, IOException {
+		if (log.isDebugEnabled()) {
+			log.debug("Enter: hashTokens()");
+		}
+		Map<String,String> tokenMap = new HashMap<String,String>();
+		int updated = 0;
+		String query = "SELECT id, token FROM ets_user_token WHERE NOT(token like '{SSHA256}%')";
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			Connection connection = getConnection();
+			statement = connection.prepareStatement(query);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString("id");
+				String token = rs.getString("token");
+				if (log.isTraceEnabled()) {
+					log.trace(String.format("hashTokens: Token id: %s", id));
+				}
+				tokenMap.put(id, token);
+			}
+			rs.close();
+			statement.close();
+			if (!tokenMap.isEmpty()) {
+				for (String id: tokenMap.keySet()) {
+					String token = tokenMap.get(id);
+					token = hashToken(token);
+					if (token == null || token.equals(tokenMap.get(id))) {
+						log.error("No hash update, aborting");
+						return -1;
+					}
+					query = "UPDATE ets_user_token SET token = ? WHERE id = ?";
+					statement = connection.prepareStatement(query);
+					statement.setString(1, token);
+					statement.setString(2, id);
+					statement.execute();
+					statement.close();
+					updated++;
+				}
+			}			
+		} finally {
+			try {
+				if (rs != null && !rs.isClosed()) {
+					rs.close();
+				}
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				log.error(e);
+				// Silently ignore
+			}
+		}
+		log.trace(String.format("hashTokens: Rehashed %d tokens", updated));
+		return updated;
+	}
 
 	protected void finalize() throws SQLException {
 		if (log.isDebugEnabled()) {
@@ -760,6 +857,9 @@ public class ETSContext {
 		}
 		if (connection != null && !connection.isClosed()) {
 			connection.close();
+		}
+		if (dataSource != null && !dataSource.isClosed()) {
+			dataSource.close();
 		}
 	}
 }

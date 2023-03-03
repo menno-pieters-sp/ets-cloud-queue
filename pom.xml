@@ -10,13 +10,14 @@
   <!-- The groupId, artifactId, version is sourced from when the project is instantiated.-->
   <groupId>sailpoint</groupId>
   <artifactId>ets-cloud-queueadapter</artifactId>
-  <version>20230111.0.1</version>
+  <version>20230303.0.1</version>
 
   <!-- Set build properties here. For the most part, you should only need to set the version numbers
   for dependencies here. -->
   <properties>
     <!-- Versions for various dependencies are set here -->
-    <log4j.version>2.19.0</log4j.version>
+    <log4j.version>2.20.0</log4j.version>
+    <slf4j.version>2.0.6</slf4j.version>
     <compiler.source.version>1.8</compiler.source.version>
     <compiler.target.version>1.8</compiler.target.version>
     <org.glassfish.jersey.version>2.38</org.glassfish.jersey.version>
@@ -28,7 +29,7 @@
       <groupId>javax.xml.ws</groupId>
       <artifactId>jaxws-api</artifactId>
       <version>2.3.1</version>
-  </dependency>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -50,9 +51,16 @@
       <artifactId>log4j-jcl</artifactId>
       <version>${log4j.version}</version>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-to-slf4j</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
       <version>${log4j.version}</version>
     </dependency>
     <dependency>
@@ -168,6 +176,18 @@
       <artifactId>osgi-resource-locator</artifactId>
       <version>2.4.0</version>
     </dependency>
+    <!--
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    -->
   </dependencies>
 
   <!-- Plugins for build -->

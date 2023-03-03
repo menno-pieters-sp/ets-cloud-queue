@@ -58,8 +58,44 @@ public class Admin {
 		ETSContext eTSContext;
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
-			eTSContext = ETSContext.getCurrentContext(servletRequest);
+			eTSContext = ETSContext.getContext(servletRequest);
 			authenticate(eTSContext, authHeader);
+			result.put("status", "success");
+		} catch (AuthorizationException | IOException | SQLException e) {
+			result.put("status", "error");
+			result.put("error", e.getMessage());
+		}
+		return result;
+	}
+
+	@GET
+	@Path("reload")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Map<String, Object> reload(@Context HttpServletRequest servletRequest, @HeaderParam("Authorization") String authHeader) {
+		ETSContext eTSContext;
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			eTSContext = ETSContext.getContext(servletRequest);
+			authenticate(eTSContext, authHeader);
+			eTSContext.reload();
+			result.put("status", "success");
+		} catch (AuthorizationException | IOException | SQLException e) {
+			result.put("status", "error");
+			result.put("error", e.getMessage());
+		}
+		return result;
+	}
+	
+	@GET
+	@Path("hashTokens")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Map<String, Object> hashTokens(@Context HttpServletRequest servletRequest, @HeaderParam("Authorization") String authHeader) {
+		ETSContext eTSContext;
+		Map<String,Object> result = new HashMap<String,Object>();
+		try {
+			eTSContext = ETSContext.getContext(servletRequest);
+			authenticate(eTSContext, authHeader);
+			int c = eTSContext.hashTokens();
 			result.put("status", "success");
 		} catch (AuthorizationException | IOException | SQLException e) {
 			result.put("status", "error");
@@ -75,7 +111,7 @@ public class Admin {
 		ETSContext eTSContext;
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
-			eTSContext = ETSContext.getCurrentContext(servletRequest);
+			eTSContext = ETSContext.getContext(servletRequest);
 			authenticate(eTSContext, authHeader);
 			result.put("status", "success");
 			result.put("uuid", Util.uuid());
@@ -93,7 +129,7 @@ public class Admin {
 		ETSContext eTSContext;
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
-			eTSContext = ETSContext.getCurrentContext(servletRequest);
+			eTSContext = ETSContext.getContext(servletRequest);
 			authenticate(eTSContext, authHeader);
 			result.put("queues", eTSContext.getQueues());
 			result.put("status", "success");
@@ -113,7 +149,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: queueCreate(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, data));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		String description = Util.otos(data.get("description"));
 		Map<String, String> result = new HashMap<String, String>();
@@ -136,7 +172,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: queueDelete(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, id));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		Map<String, String> result = new HashMap<String, String>();
 		try {
@@ -157,7 +193,7 @@ public class Admin {
 		ETSContext eTSContext;
 		Map<String,Object> result = new HashMap<String,Object>();
 		try {
-			eTSContext = ETSContext.getCurrentContext(servletRequest);
+			eTSContext = ETSContext.getContext(servletRequest);
 			authenticate(eTSContext, authHeader);
 			result.put("users", eTSContext.getUsers());
 			result.put("status", "success");
@@ -177,7 +213,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: queueCreate(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, data));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		String name = Util.otos(data.get("name"));
 		String displayName = Util.otos(data.get("displayName"));
@@ -202,7 +238,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: queueCreate(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, data));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		String userId = Util.otos(data.get("userId"));
 		String queueId = Util.otos(data.get("queueId"));
@@ -234,7 +270,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: userDelete(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, id));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		Map<String, String> result = new HashMap<String, String>();
 		try {
@@ -257,7 +293,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: queueCreate(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, data));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		String userId = Util.otos(data.get("userId"));
 		String description = Util.otos(data.get("description"));
@@ -283,7 +319,7 @@ public class Admin {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: tokenDelete(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, id));
 		}
-		ETSContext eTSContext = ETSContext.getCurrentContext(servletRequest);
+		ETSContext eTSContext = ETSContext.getContext(servletRequest);
 		authenticate(eTSContext, authHeader);
 		Map<String, String> result = new HashMap<String, String>();
 		try {
