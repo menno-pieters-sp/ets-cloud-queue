@@ -52,8 +52,8 @@ public class EventListener {
 			@PathParam("queue") String queue, Map<String, Object> data)
 			throws FileNotFoundException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: trigger(%s, %s, %s, %s, %s)", servletRequest, servletResponse, authHeader,
-					queue, data));
+			log.debug(String.format("Enter: trigger(%s, %s, %s, %s, %s)", servletRequest, servletResponse, "********",
+					queue, "********"));
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -75,7 +75,7 @@ public class EventListener {
 	private Map<String, Object> pollInternal(HttpServletRequest servletRequest, String authHeader, String queue,
 			boolean remove) throws FileNotFoundException, IOException, SQLException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: pollInternal(%s, %s, %s, %b)", servletRequest, authHeader, queue, remove));
+			log.debug(String.format("Enter: pollInternal(%s, %s, %s, %b)", servletRequest, "********", queue, remove));
 		}
 		String token = AuthorizationHelper.getBearerToken(authHeader);
 		ETSContext eTSContext = ETSContext.getContext(servletRequest);
@@ -92,10 +92,6 @@ public class EventListener {
 					result.put("__hasMore", eTSContext.queueHasMore(queue));
 				}
 			}
-		/*} else {
-			if (remove) {
-				result.put("__hasMore", false);
-			}*/
 		}
 		return result;
 	}
@@ -107,7 +103,7 @@ public class EventListener {
 			@Context HttpServletResponse servletResponse, @HeaderParam("Authorization") String authHeader,
 			@PathParam("queue") String queue) throws FileNotFoundException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: poll(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, queue));
+			log.debug(String.format("Enter: poll(%s, %s, %s, %s)", servletRequest, servletResponse, "********", queue));
 		}
 		Map<String, Object> result = null;
 		try {
@@ -127,7 +123,7 @@ public class EventListener {
 			@Context HttpServletResponse servletResponse, @HeaderParam("Authorization") String authHeader,
 			@PathParam("queue") String queue) throws FileNotFoundException, IOException, SQLException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: peek(%s, %s, %s, %s)", servletRequest, servletResponse, authHeader, queue));
+			log.debug(String.format("Enter: peek(%s, %s, %s, %s)", servletRequest, servletResponse, "********", queue));
 		}
 		Map<String, Object> result = null;
 		try {

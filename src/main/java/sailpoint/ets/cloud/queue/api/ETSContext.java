@@ -153,7 +153,7 @@ public class ETSContext {
 
 	public void writeDataToQueue(String queue, String data) {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: writeDataToQueue(%s, %s)", queue, data));
+			log.debug(String.format("Enter: writeDataToQueue(%s, %s)", queue, "********"));
 		}
 		if (Util.isNotNullOrEmpty(queue) && Util.isNotNullOrEmpty(data)) {
 			String query = "INSERT INTO ets_queue_entry (queue_id, data) VALUES (?, ?)";
@@ -282,7 +282,7 @@ public class ETSContext {
 	
 	private String hashToken(final String token) throws FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: hashToken(%s)", token));
+			log.debug(String.format("Enter: hashToken(%s)", "**********"));
 		}
 		Properties properties = getProperties();
 		String salt = properties.getProperty(PROPERTY_TOKEN_SALT);
