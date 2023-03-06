@@ -1,3 +1,6 @@
+/**
+ * Copyright (C) 2022-2023 SailPoint Technologies
+ */
 package sailpoint.ets.cloud.queue.api;
 
 import java.io.File;
@@ -27,11 +30,18 @@ import org.apache.logging.log4j.LogManager;
 
 import sailpoint.ets.cloud.queue.tools.Util;
 
+/**
+ * 
+ * @author menno.pieters
+ *
+ * A central helper class for the ETS queue application.
+ * 
+ */
 public class ETSContext {
 
 	private HttpServletRequest servletRequest = null;
 
-	public static final Logger log = LogManager.getLogger(ETSContext.class);
+	private static final Logger log = LogManager.getLogger(ETSContext.class);
 	private static BasicDataSource dataSource = null;
 	private static Connection connection = null;
 	private static Properties properties = null;
@@ -51,6 +61,13 @@ public class ETSContext {
 		init();
 	}
 
+	/**
+	 * Open a datasource to the database if needed and return the database datasource.
+	 * 
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private BasicDataSource getDataSource() throws FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: getDataSource()");
@@ -69,6 +86,14 @@ public class ETSContext {
 		return dataSource;
 	}
 
+	/**
+	 * Create a database connection if needed. Return the connection.
+	 * 
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private Connection getConnection() throws FileNotFoundException, SQLException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: getConnection()");
@@ -79,6 +104,13 @@ public class ETSContext {
 		return connection;
 	}
 
+	/**
+	 * Open the configuration file and return the contents.
+	 * 
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private Properties getProperties() throws FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: getProperties()");
@@ -91,6 +123,13 @@ public class ETSContext {
 		return properties;
 	}
 
+	/**
+	 * Initialize the class. Get the configuration and open the database connection.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	private void init() throws FileNotFoundException, IOException, SQLException {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: init()");
@@ -101,6 +140,15 @@ public class ETSContext {
 		this.maxEntryAge = Util.otoi(properties.getProperty("db.queue.maxage", "3600"));
 	}
 
+	/**
+	 * Get a fresh instance of this context.
+	 * 
+	 * @param servletRequest
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	public static ETSContext getContext(HttpServletRequest servletRequest) throws FileNotFoundException, IOException, SQLException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: getCurrentContext(%s)", servletRequest));
@@ -108,6 +156,13 @@ public class ETSContext {
 		return new ETSContext(servletRequest);
 	}
 	
+	/**
+	 * Reload the configuration.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	public void reload() throws FileNotFoundException, IOException, SQLException {
 		if (connection != null && !connection.isClosed()) {
 			connection.close();
@@ -119,6 +174,11 @@ public class ETSContext {
 		init();
 	}
 
+	/**
+	 * Clean the queue. Any entries older than the maximum age (in seconds) specfied in the configuration file will be removed.
+	 * 
+	 * @param queue	The id of the queue to clean.
+	 */
 	public void cleanQueue(String queue) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: cleanQueue(%s)", queue));
@@ -151,6 +211,12 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Write a new entry to the specified queue.
+	 * 
+	 * @param queue	The id of the queue to use.
+	 * @param data	The data to be stored.
+	 */
 	public void writeDataToQueue(String queue, String data) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: writeDataToQueue(%s, %s)", queue, "********"));
@@ -180,6 +246,12 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Remove data from the queue.
+	 * 
+	 * @param queue	The id of the queue.
+	 * @param id	The id of the entry to be removed.	 * 
+	 */
 	public void removeQueueData(String queue, String id) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: removeQueueData(%s, %s)", queue, id));
@@ -208,6 +280,12 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Check whether any entries exist in the specified queue.
+	 * 
+	 * @param queue	The queue to check.
+	 * @return
+	 */
 	public boolean queueHasMore(String queue) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: queueHasMore(%s)", queue));
@@ -242,6 +320,13 @@ public class ETSContext {
 		return false;
 	}
 
+	/**
+	 * Get an entry from the specified queue and remove if remove is set to true.
+	 * 
+	 * @param queue	The id of the queue.
+	 * @param remove	Remove entry if true.
+	 * @return
+	 */
 	public String pollQueueData(String queue, boolean remove) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: pollQueueData(%s)", queue));
@@ -280,6 +365,14 @@ public class ETSContext {
 		return null;
 	}
 	
+	/**
+	 * Hash a string using a random salt.
+	 * 
+	 * @param token
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private String hashToken(final String token) throws FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: hashToken(%s)", "**********"));
@@ -295,6 +388,13 @@ public class ETSContext {
 		return newToken;
 	}
 
+	/**
+	 * Check whether a user, to whom the provided token belongs, is authorized to write to the specified queue.
+	 * 
+	 * @param token	Plain text token.
+	 * @param queue	Id of the queue.
+	 * @throws AuthorizationException
+	 */
 	public void authorizeWrite(String token, String queue) throws AuthorizationException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: authorizeWrite(********, %s)", queue));
@@ -335,6 +435,13 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Check whether a user, to whom the provided token belongs, is authorized to read from the specified queue.
+	 * 
+	 * @param token	Plain text token.
+	 * @param queue	Id of the queue.
+	 * @throws AuthorizationException
+	 */
 	public void authorizeRead(String token, String queue) throws AuthorizationException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: authorizeRead(********, %s)", queue));
@@ -376,6 +483,15 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Check the provided admin username and password.
+	 * 
+	 * @param username
+	 * @param password
+	 * @throws AuthorizationException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void authorizeAdmin(String username, String password) throws AuthorizationException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: authorizeAdmin(%s, %s)", username, "********"));
@@ -395,6 +511,14 @@ public class ETSContext {
 		throw new AuthorizationException("Invalid Credentials");
 	}
 
+	/**
+	 * Check the provided admin username and password.
+	 * 
+	 * @param credentials
+	 * @throws AuthorizationException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void authorizeAdmin(Map<String, String> credentials) throws AuthorizationException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: authorizeAdmin(%s)", (credentials==null)?"null":"Map(********)"));
@@ -405,10 +529,16 @@ public class ETSContext {
 		authorizeAdmin(credentials.get("username"), credentials.get("password"));
 	}
 
+	/**
+	 * List all available queues.
+	 * 
+	 * @return
+	 */
 	public List<Map<String, String>> getQueues() {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: getQueues()");
 		}
+		/* TODO: paging? */
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		String query = "SELECT * FROM ets_queue";
 		PreparedStatement statement = null;
@@ -445,6 +575,15 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * Create a new queue.
+	 * 
+	 * @param description	Description of the new queue.
+	 * @return
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public Map<String, String> createQueue(String description) throws SQLException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: createQueue(%s)", description));
@@ -474,6 +613,14 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * Remove the specified queue.
+	 * 
+	 * @param id
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void deleteQueue(String id) throws SQLException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: deleteQueue(%s)", id));
@@ -499,6 +646,15 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Get the queues and authorizations to queues for the specified user.
+	 * 
+	 * @param user_id
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	public List<Map<String, Object>> getUserQueueAccess(String user_id) throws FileNotFoundException, SQLException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: getUserQueueAccess(%s)", user_id));
@@ -539,6 +695,15 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * Get an overview of tokens generated for the user. This does not include the actual token, but just the id and description.
+	 * 
+	 * @param user_id
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	public List<Map<String, Object>> getUserTokens(String user_id) throws FileNotFoundException, SQLException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: getUserTokens(%s)", user_id));
@@ -577,10 +742,18 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * List all users.
+	 * 
+	 * @return
+	 */
 	public List<Map<String, Object>> getUsers() {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: getUsers()");
 		}
+		/**
+		 * TODO: paging?
+		 */
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		String query = "SELECT id, name, display_name, active FROM ets_user";
 		PreparedStatement statement = null;
@@ -624,6 +797,17 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * Create a new token for a user, optionally with an expiration date.
+	 * 
+	 * @param user_id
+	 * @param description
+	 * @param expiration
+	 * @return
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public Map<String, String> createUserToken(String user_id, String description, java.util.Date expiration) throws SQLException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: createUserToken(%s, %s, %b)", user_id, description, expiration));
@@ -659,6 +843,14 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * Delete a user token.
+	 * 
+	 * @param id
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void deleteUserToken(String id) throws SQLException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: deleteUserToken(%s)", id));
@@ -684,6 +876,17 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Create a new user.
+	 * 
+	 * @param name
+	 * @param displayName
+	 * @param active
+	 * @return
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public Map<String, String> createUser(String name, String displayName, boolean active) throws SQLException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: createUser(%s, %s, %b)", name, displayName, active));
@@ -715,6 +918,14 @@ public class ETSContext {
 		return result;
 	}
 
+	/**
+	 * Delete a user.
+	 * 
+	 * @param id
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void deleteUser(String id) throws SQLException, FileNotFoundException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: deleteUser(%s)", id));
@@ -740,6 +951,17 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Set authorizations for a user on a queue.
+	 * 
+	 * @param userId
+	 * @param queueId
+	 * @param read
+	 * @param write
+	 * @throws FileNotFoundException
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	public void setUserAuthorization(String userId, String queueId, boolean read, boolean write) throws FileNotFoundException, SQLException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: setUserAuthorization(%s, %s, %b, %b)", userId, queueId, read, write));
@@ -768,6 +990,15 @@ public class ETSContext {
 		}
 	}
 
+	/**
+	 * Remove all authorizations for a user on the specified queue.
+	 * 
+	 * @param userId
+	 * @param queueId
+	 * @throws FileNotFoundException
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	public void unsetUserAuthorization(String userId, String queueId) throws FileNotFoundException, SQLException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: unsetUserAuthorization(%s, %s)", userId, queueId));
@@ -794,6 +1025,14 @@ public class ETSContext {
 		}
 	}
 	
+	/**
+	 * Update any plain text tokens to a hashed format.
+	 * 
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	public int hashTokens() throws FileNotFoundException, SQLException, IOException {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: hashTokens()");
@@ -851,6 +1090,9 @@ public class ETSContext {
 		return updated;
 	}
 
+	/**
+	 * To be executed if the class is removed from memory.
+	 */
 	protected void finalize() throws SQLException {
 		if (log.isDebugEnabled()) {
 			log.debug("Enter: finalize()");

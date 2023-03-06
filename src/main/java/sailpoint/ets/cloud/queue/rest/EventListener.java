@@ -1,3 +1,6 @@
+/**
+ * Copyright (C) 2022-2023 SailPoint Technologies
+ */
 package sailpoint.ets.cloud.queue.rest;
 
 import java.io.FileNotFoundException;
@@ -34,7 +37,7 @@ import javax.ws.rs.PathParam;
 @Path("event")
 public class EventListener {
 
-	public static final Logger log = LogManager.getLogger(EventListener.class);
+	private static final Logger log = LogManager.getLogger(EventListener.class);
 
 	public EventListener() {
 		super();
@@ -72,6 +75,18 @@ public class EventListener {
 		return result;
 	}
 
+	/**
+	 * Check for an entry in the specified queue.
+	 * 
+	 * @param servletRequest
+	 * @param authHeader
+	 * @param queue		The id of the queue to check.
+	 * @param remove	Remove entry from the queue if true.
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	private Map<String, Object> pollInternal(HttpServletRequest servletRequest, String authHeader, String queue,
 			boolean remove) throws FileNotFoundException, IOException, SQLException {
 		if (log.isDebugEnabled()) {
@@ -96,6 +111,16 @@ public class EventListener {
 		return result;
 	}
 
+	/**
+	 * Check for an entry from the specified queue and remove it after returning.
+	 * 
+	 * @param servletRequest
+	 * @param servletResponse
+	 * @param authHeader
+	 * @param queue
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	@GET
 	@Path("poll/{queue}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -116,6 +141,18 @@ public class EventListener {
 		return result;
 	}
 
+	/**
+	 * Check for an entry from the specified queue but do not remove it after returning.
+	 *
+	 * @param servletRequest
+	 * @param servletResponse
+	 * @param authHeader
+	 * @param queue
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	@GET
 	@Path("peek/{queue}")
 	@Produces(MediaType.APPLICATION_JSON)

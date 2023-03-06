@@ -1,7 +1,15 @@
+/**
+ * Copyright (C) 2022-2023 SailPoint Technologies
+ */
 package sailpoint.ets.cloud.queue.api;
 
 import javax.xml.ws.WebServiceException;
 
+/**
+ * 
+ * @author menno.pieters
+ *
+ */
 public class AuthorizationException extends WebServiceException {
 
 	/**

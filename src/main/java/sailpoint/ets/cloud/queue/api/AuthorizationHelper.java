@@ -1,3 +1,6 @@
+/**
+ * Copyright (C) 2022-2023 SailPoint Technologies
+ */
 package sailpoint.ets.cloud.queue.api;
 
 import java.nio.charset.StandardCharsets;
@@ -14,18 +17,30 @@ import java.util.Map;
 
 import sailpoint.ets.cloud.queue.tools.Util;
 
+/**
+ * 
+ * @author menno.pieters
+ *
+ */
 public class AuthorizationHelper {
 
 	public final static String SSHA256PREFIX = "{SSHA256}";
-	
-	public static final Logger log = LogManager.getLogger(AuthorizationHelper.class);
+
+	private static final Logger log = LogManager.getLogger(AuthorizationHelper.class);
 
 	public AuthorizationHelper() {
 	}
 
+	/**
+	 * Retrieve the Bearer token from the authorization header.
+	 * 
+	 * @param header
+	 *            Contents of the Authorization header.
+	 * @return token or null if not found.
+	 */
 	public static String getBearerToken(String header) {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: getBearerToken(%s)", (header==null)?"null":"********"));
+			log.debug(String.format("Enter: getBearerToken(%s)", (header == null) ? "null" : "********"));
 		}
 		if (header != null && header.length() > 0) {
 			if (header.startsWith("Bearer ")) {
@@ -36,9 +51,17 @@ public class AuthorizationHelper {
 		return null;
 	}
 
+	/**
+	 * Find the username and password from the Authorization header for Basic authentication.
+	 * 
+	 * @param header
+	 *            Contents of the Authorization header.
+	 * @return A map with the username and password if found, null if no Basic authentication found or an empty map if decoding fails.
+	 * 
+	 */
 	public static Map<String, String> getBasicCredentials(String header) {
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Enter: getBasicCredentials(%s)", (header==null)?"null":"********"));
+			log.debug(String.format("Enter: getBasicCredentials(%s)", (header == null) ? "null" : "********"));
 		}
 		if (header != null && header.length() > 0) {
 			if (header.startsWith("Basic ")) {
@@ -61,6 +84,13 @@ public class AuthorizationHelper {
 		return null;
 	}
 
+	/**
+	 * Hash a password using the provided salt.
+	 * 
+	 * @param salt
+	 * @param password
+	 * @return
+	 */
 	public static String ssha256(String salt, String password) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: ssha256(%s, %s)", "********", "********"));
@@ -84,6 +114,13 @@ public class AuthorizationHelper {
 		return null;
 	}
 
+	/**
+	 * Compare the hashed password against a provided password. To do so, the salt must be extracted from the password hash and a new hash generated.
+	 * 
+	 * @param hashedPassword	Existing password hash.
+	 * @param password	Plain password.
+	 * @return	true if passwords match, false otherwise.
+	 */
 	public static boolean validatePassword(String hashedPassword, String password) {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Enter: validatePassword(%s, %s)", "********", "********"));
