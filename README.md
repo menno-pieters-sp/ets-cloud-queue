@@ -46,11 +46,13 @@ Using a MySQL client or command line, load the DDL file to create the necessary 
 
 Deployment steps:
 * Extract the `.war` file
+* Copy the file `WEB-INF/classes/sample-queue.properties` to `WEB-INF/classes/queue.properties`.
 * Edit the file `WEB-INF/classes/queue.properties`:
 ** Set the correct database URL, username and password
 ** Change the admin password (defaults to `admin`) and optionally change the admin username (default `spadmin`);
 *** See below for the password hash generation.
 * Update the password hash in the file and save it.
+* Set a value for the `tokenSalt` property. This is the salt that is used to hash client tokens and must be unique for your installation.
 * ZIP up (or use the `jar` command) the `war` file again and deploy the `war` file in Tomcat 9.
 
 To generate the password hash:

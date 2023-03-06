@@ -18,3 +18,14 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------
+
+Licences for dependencies:
+* Log4J: https://www.apache.org/licenses/LICENSE-2.0
+* JavaX Servlet API: https://javaee.github.io/javaee-spec/LICENSE
+* JAX WS: https://javaee.github.io/metro-jax-ws/LICENSE
+* Apache Commons DBCP2: https://www.apache.org/licenses/LICENSE-2.0
+* Eclipse Glassfish Jersey: https://www.eclipse.org/legal/epl-2.0/
+* Jakarta EE: https://www.eclipse.org/org/documents/edl-v10.php
+* Glassfish HK2: https://javaee.github.io/hk2/LICENSE
