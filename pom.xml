@@ -16,11 +16,11 @@
   for dependencies here. -->
   <properties>
     <!-- Versions for various dependencies are set here -->
-    <log4j.version>2.20.0</log4j.version>
+    <log4j.version>2.24.2</log4j.version>
     <compiler.source.version>1.8</compiler.source.version>
     <compiler.target.version>1.8</compiler.target.version>
-    <org.glassfish.jersey.version>2.38</org.glassfish.jersey.version>
-    <mysql.jdbc.version>8.0.31</mysql.jdbc.version>
+    <org.glassfish.jersey.version>2.45</org.glassfish.jersey.version>
+    <mysql.jdbc.version>8.4.0</mysql.jdbc.version>
   </properties>
 
   <dependencies>
