@@ -16,7 +16,7 @@
   for dependencies here. -->
   <properties>
     <!-- Versions for various dependencies are set here -->
-    <log4j.version>2.25.4</log4j.version>
+    <log4j.version>2.25.5</log4j.version>
     <compiler.source.version>1.8</compiler.source.version>
     <compiler.target.version>1.8</compiler.target.version>
     <org.glassfish.jersey.version>2.46</org.glassfish.jersey.version>
